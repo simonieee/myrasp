@@ -11,6 +11,7 @@ const PoWPresenter = () => {
   const [nonce, setNonce] = useState(0);
   const [difficulty, setDifficulty] = useState(1);
   const [interval, setTheInterval] = useState();
+  const [mining, setMining] = useState(false);
   /* Hooks */
   /* Functions */
   /**
@@ -24,6 +25,7 @@ const PoWPresenter = () => {
   const needzero = "0".repeat(difficulty);
   const canMine = candidateHash.startsWith(needzero);
   const autoFindNonce = (e) => {
+    setMining(true);
     e.preventDefault();
     const interval = setInterval(() => {
       setNonce((nonce) => nonce + 1);
@@ -66,7 +68,7 @@ const PoWPresenter = () => {
       height: blocks.length,
       blockData: blockData,
       prevBlockHash: prevBlockHash,
-      hash: sha256(`${nonce}${blockData}${prevBlockHash}`).toString(),
+      hash: candidateHash,
       timestamp: timestamp,
       nonce: nonce,
     };
@@ -75,6 +77,7 @@ const PoWPresenter = () => {
     setDifficulty(2);
     setNonce(0);
     setTheInterval("");
+    setMining(false);
   };
   /* Render */
   return (
@@ -89,6 +92,7 @@ const PoWPresenter = () => {
             placeholder="Block Data"
             value={blockData}
             onChange={changeBlockData}
+            disabled={mining}
           />
           <p>Nonce</p>
           <div className="nonce-container">
@@ -99,6 +103,7 @@ const PoWPresenter = () => {
               placeholder="Nonce"
               value={nonce}
               onChange={changeNonce}
+              disabled={mining}
             />
             <button onClick={autoFindNonce}>자동</button>
           </div>
@@ -112,6 +117,7 @@ const PoWPresenter = () => {
               placeholder="difficulty"
               value={difficulty}
               onChange={changeDifficulty}
+              disabled={mining}
             />
             <button
               onClick={handleMiningBlcok}
